@@ -1,9 +1,12 @@
 ﻿using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
 using SimpleGallery.Models;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SimpleGallery.ViewModels
 {
@@ -15,7 +18,7 @@ namespace SimpleGallery.ViewModels
         public MainWindowViewModel()
         {
             LoadFolders();
-            LoadImages();
+            LoadImagesAsync();
         }
 
         [RelayCommand]
@@ -39,7 +42,7 @@ namespace SimpleGallery.ViewModels
             }
         }
 
-        private void LoadImages()
+        private async void LoadImagesAsync()
         {
             Images.Clear();
             if (Directory.Exists("C:\\Users\\WILMER\\Pictures"))
@@ -49,12 +52,12 @@ namespace SimpleGallery.ViewModels
                     if (IsImageFile(file))
                     {
                         string folderName = Path.GetFileName(file);
-                        FolderFilesModel folderFilesModel = new() { Name = folderName, Path = file };
-                        using (var stream = File.OpenRead(file))
+                        FolderFilesModel folderFilesModel = new()
                         {
-                            var bitmap = new Bitmap(stream);
-                            folderFilesModel.ImageSource = bitmap;
-                        }
+                            Name = folderName,
+                            Path = file,
+                            ImageSource = await ReduceImageSizeAsync(file)
+                        };
 
                         Images.Add(folderFilesModel);
                     }
@@ -62,7 +65,22 @@ namespace SimpleGallery.ViewModels
             }
         }
 
-        private bool IsImageFile(string file)
+        private static async Task<Bitmap> ReduceImageSizeAsync(string inputImagePath)
+        {
+            using var image = await Image.LoadAsync(inputImagePath);
+            int newWidth = image.Width / 5;
+            int newHeight = image.Height / 5;
+
+            image.Mutate(x => x.Resize(newWidth, newHeight));
+
+            using var ms = new MemoryStream();
+            await image.SaveAsPngAsync(ms);
+            ms.Seek(0, SeekOrigin.Begin);
+
+            return new Bitmap(ms);
+        }
+
+        private static bool IsImageFile(string file)
         {
             var extensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp" };
             var extension = Path.GetExtension(file)?.ToLower();
