@@ -52,17 +52,17 @@ namespace SimpleGallery.Views
                     // Variables para detectar gestos táctiles
                     Point? initialTouchPoint = null;
 
-                    image.PointerPressed += (s, e) =>
+                    mainPanel.PointerPressed += (s, e) =>
                     {
-                        initialTouchPoint = e.GetPosition(image);
+                        initialTouchPoint = e.GetPosition(mainPanel); // Captura la posición inicial del arrastre
                     };
 
-                    image.PointerReleased += (s, e) =>
+                    mainPanel.PointerReleased += (s, e) =>
                     {
                         if (initialTouchPoint is null)
                             return;
 
-                        var finalTouchPoint = e.GetPosition(image);
+                        var finalTouchPoint = e.GetPosition(mainPanel);
                         var deltaX = finalTouchPoint.X - initialTouchPoint.Value.X;
 
                         // Define un umbral para considerar un deslizamiento
@@ -89,14 +89,13 @@ namespace SimpleGallery.Views
                     };
 
                     // Manejar el cierre con doble clic
-                    image.DoubleTapped += (s, e) => fullScreenWindow.Close();
+                    mainPanel.DoubleTapped += (s, e) => fullScreenWindow.Close();
 
-                    // Agrega el elemento de imagen al panel
+                    // Agrega la imagen al panel principal
                     mainPanel.Children.Add(image);
 
                     fullScreenWindow.Content = mainPanel;
                     fullScreenWindow.Show();
-
                 }
             }
         }
