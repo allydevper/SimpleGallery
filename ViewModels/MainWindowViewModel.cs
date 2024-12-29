@@ -12,6 +12,7 @@ namespace SimpleGallery.ViewModels
 {
     public partial class MainWindowViewModel : ViewModelBase
     {
+        public string localPath = "C:\\Users\\WILMER\\Pictures";
         public ObservableCollection<FolderFilesModel> Folders { get; } = [];
         public ObservableCollection<FolderFilesModel> Images { get; } = [];
 
@@ -30,9 +31,9 @@ namespace SimpleGallery.ViewModels
         private void LoadFolders()
         {
             Folders.Clear();
-            if (Directory.Exists("C:\\Users\\WILMER\\Pictures"))
+            if (Directory.Exists(localPath))
             {
-                foreach (var directory in Directory.GetDirectories("C:\\Users\\WILMER\\Pictures"))
+                foreach (var directory in Directory.GetDirectories(localPath))
                 {
                     string folderName = Path.GetFileName(directory);
 
@@ -45,9 +46,9 @@ namespace SimpleGallery.ViewModels
         private async void LoadImagesAsync()
         {
             Images.Clear();
-            if (Directory.Exists("C:\\Users\\WILMER\\Pictures"))
+            if (Directory.Exists(localPath))
             {
-                foreach (var file in Directory.GetFiles("C:\\Users\\WILMER\\Pictures", "*.*", SearchOption.TopDirectoryOnly))
+                foreach (var file in Directory.GetFiles(localPath, "*.*", SearchOption.TopDirectoryOnly))
                 {
                     if (IsImageFile(file))
                     {
