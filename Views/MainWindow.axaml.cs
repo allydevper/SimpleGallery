@@ -6,6 +6,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using SimpleGallery.Models;
 using SimpleGallery.ViewModels;
+using System;
 
 namespace SimpleGallery.Views
 {
@@ -48,48 +49,54 @@ namespace SimpleGallery.Views
                         Stretch = Stretch.Uniform
                     };
 
-                    // Botón para cambiar imagen anterior
-                    var prevButton = new Button
+                    // Variables para detectar gestos táctiles
+                    Point? initialTouchPoint = null;
+
+                    image.PointerPressed += (s, e) =>
                     {
-                        Content = "<",
-                        VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-                        Margin = new Thickness(20),
-                        FontSize = 30
+                        initialTouchPoint = e.GetPosition(image);
                     };
 
-                    prevButton.Click += (s, e) =>
+                    image.PointerReleased += (s, e) =>
                     {
-                        currentImageIndex = (currentImageIndex - 1 + viewModel.Images.Count) % viewModel.Images.Count;
-                        image.Source = new Bitmap(viewModel.Images[currentImageIndex].Path);
-                    };
+                        if (initialTouchPoint is null)
+                            return;
 
-                    // Botón para cambiar imagen siguiente
-                    var nextButton = new Button
-                    {
-                        Content = ">",
-                        VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
-                        Margin = new Thickness(20),
-                        FontSize = 30
-                    };
+                        var finalTouchPoint = e.GetPosition(image);
+                        var deltaX = finalTouchPoint.X - initialTouchPoint.Value.X;
 
-                    nextButton.Click += (s, e) =>
-                    {
-                        currentImageIndex = (currentImageIndex + 1) % viewModel.Images.Count;
-                        image.Source = new Bitmap(viewModel.Images[currentImageIndex].Path);
+                        // Define un umbral para considerar un deslizamiento
+                        const double swipeThreshold = 50;
+
+                        if (Math.Abs(deltaX) > swipeThreshold)
+                        {
+                            if (deltaX > 0)
+                            {
+                                // Desliza hacia la derecha: imagen anterior
+                                currentImageIndex = (currentImageIndex - 1 + viewModel.Images.Count) % viewModel.Images.Count;
+                            }
+                            else
+                            {
+                                // Desliza hacia la izquierda: imagen siguiente
+                                currentImageIndex = (currentImageIndex + 1) % viewModel.Images.Count;
+                            }
+
+                            // Actualiza la imagen mostrada
+                            image.Source = new Bitmap(viewModel.Images[currentImageIndex].Path);
+                        }
+
+                        initialTouchPoint = null; // Reinicia para el próximo gesto
                     };
 
                     // Manejar el cierre con doble clic
                     image.DoubleTapped += (s, e) => fullScreenWindow.Close();
 
-                    // Agrega los elementos al panel
+                    // Agrega el elemento de imagen al panel
                     mainPanel.Children.Add(image);
-                    mainPanel.Children.Add(prevButton);
-                    mainPanel.Children.Add(nextButton);
 
                     fullScreenWindow.Content = mainPanel;
                     fullScreenWindow.Show();
+
                 }
             }
         }
