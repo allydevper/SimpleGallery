@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Avalonia.Media.Imaging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,6 @@ namespace SimpleGallery.Models
     {
         public required string Name { get; set; }
         public required string Path { get; set; }
+        public Bitmap? ImageSource { get; set; }
     }
 }

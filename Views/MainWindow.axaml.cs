@@ -1,4 +1,6 @@
 using Avalonia.Controls;
+using Avalonia.Interactivity;
+using SimpleGallery.ViewModels;
 
 namespace SimpleGallery.Views
 {
@@ -7,6 +9,17 @@ namespace SimpleGallery.Views
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void OnFolderDoubleTapped(object? sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.DataContext is var folder)
+            {
+                if (DataContext is MainWindowViewModel viewModel)
+                {
+                    viewModel.SelectFolderCommand.Execute(folder);
+                }
+            }
         }
     }
 }
