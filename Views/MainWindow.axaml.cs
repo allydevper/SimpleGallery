@@ -78,6 +78,22 @@ namespace SimpleGallery.Views
 
                             image.Source = new Bitmap(viewModel.Images[currentImageIndex].Path);
                         }
+                        else
+                        {
+                            var clickPosition = finalTouchPoint.X;
+                            var screenWidth = fullScreenWindow.Bounds.Width;
+
+                            if (clickPosition > screenWidth / 2)
+                            {
+                                currentImageIndex = (currentImageIndex + 1) % viewModel.Images.Count;
+                            }
+                            else
+                            {
+                                currentImageIndex = (currentImageIndex - 1 + viewModel.Images.Count) % viewModel.Images.Count;
+                            }
+
+                            image.Source = new Bitmap(viewModel.Images[currentImageIndex].Path);
+                        }
 
                         initialTouchPoint = null;
                     };
