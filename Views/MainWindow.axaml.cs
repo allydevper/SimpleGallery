@@ -1,6 +1,5 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -49,49 +48,42 @@ namespace SimpleGallery.Views
                         Stretch = Stretch.Uniform
                     };
 
-                    // Variables para detectar gestos táctiles
                     Point? initialTouchPoint = null;
 
-                    mainPanel.PointerPressed += (s, e) =>
+                    fullScreenWindow.PointerPressed += (s, e) =>
                     {
-                        initialTouchPoint = e.GetPosition(mainPanel); // Captura la posición inicial del arrastre
+                        initialTouchPoint = e.GetPosition(fullScreenWindow);
                     };
 
-                    mainPanel.PointerReleased += (s, e) =>
+                    fullScreenWindow.PointerReleased += (s, e) =>
                     {
                         if (initialTouchPoint is null)
                             return;
 
-                        var finalTouchPoint = e.GetPosition(mainPanel);
+                        var finalTouchPoint = e.GetPosition(fullScreenWindow);
                         var deltaX = finalTouchPoint.X - initialTouchPoint.Value.X;
 
-                        // Define un umbral para considerar un deslizamiento
                         const double swipeThreshold = 50;
 
                         if (Math.Abs(deltaX) > swipeThreshold)
                         {
                             if (deltaX > 0)
                             {
-                                // Desliza hacia la derecha: imagen anterior
                                 currentImageIndex = (currentImageIndex - 1 + viewModel.Images.Count) % viewModel.Images.Count;
                             }
                             else
                             {
-                                // Desliza hacia la izquierda: imagen siguiente
                                 currentImageIndex = (currentImageIndex + 1) % viewModel.Images.Count;
                             }
 
-                            // Actualiza la imagen mostrada
                             image.Source = new Bitmap(viewModel.Images[currentImageIndex].Path);
                         }
 
-                        initialTouchPoint = null; // Reinicia para el próximo gesto
+                        initialTouchPoint = null;
                     };
 
-                    // Manejar el cierre con doble clic
-                    mainPanel.DoubleTapped += (s, e) => fullScreenWindow.Close();
+                    fullScreenWindow.DoubleTapped += (s, e) => fullScreenWindow.Close();
 
-                    // Agrega la imagen al panel principal
                     mainPanel.Children.Add(image);
 
                     fullScreenWindow.Content = mainPanel;
