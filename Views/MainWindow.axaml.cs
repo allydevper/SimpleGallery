@@ -1,11 +1,14 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using SimpleGallery.Models;
 using SimpleGallery.ViewModels;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SimpleGallery.Views
 {
@@ -23,6 +26,16 @@ namespace SimpleGallery.Views
                 if (DataContext is MainWindowViewModel viewModel)
                 {
                     viewModel.SelectFolderCommand.Execute(_folder);
+                }
+            }
+        }
+        private void OnPointerPressed(object sender, PointerPressedEventArgs e)
+        {
+            if (sender is Button button && button.DataContext is FolderFilesModel _image)
+            {
+                if (DataContext is MainWindowViewModel viewModel)
+                {
+                    viewModel.Images.Remove(_image);
                 }
             }
         }

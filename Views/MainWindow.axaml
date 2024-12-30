@@ -79,6 +79,7 @@
 							<StackPanel Margin="10" Width="100" HorizontalAlignment="Center">
 								<Button Background="Transparent"
                                         DoubleTapped="OnImageDoubleTapped"
+										PointerPressed="OnPointerPressed"
                                         MinHeight="120"
                                         MinWidth="100">
 									<StackPanel>

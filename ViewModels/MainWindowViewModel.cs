@@ -17,7 +17,7 @@ namespace SimpleGallery.ViewModels
 {
     public partial class MainWindowViewModel : ViewModelBase
     {
-        public string localPath = "C:\\Users\\WILMER1\\Pictures";
+        public string localPath = "C:\\Users\\WILMER\\Pictures";
         public ObservableCollection<FolderFilesModel> Folders { get; } = [];
         public ObservableCollection<FolderFilesModel> Images { get; } = [];
 
