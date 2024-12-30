@@ -11,14 +11,13 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace SimpleGallery.ViewModels
 {
     public partial class MainWindowViewModel : ViewModelBase
     {
-        public string localPath = "C:\\Users\\WILMER\\Pictures";
+        public string localPath = "C:\\Users\\WILMER1\\Pictures";
         public ObservableCollection<FolderFilesModel> Folders { get; } = [];
         public ObservableCollection<FolderFilesModel> Images { get; } = [];
 
@@ -46,6 +45,23 @@ namespace SimpleGallery.ViewModels
 
                 string path = Uri.UnescapeDataString(folder.Path.AbsolutePath);
                 UpdateFolderImage(path);
+            }
+            catch (Exception ex)
+            {
+                await MessageBoxManager.GetMessageBoxStandard(MessageType.Error.ToString(), ex.Message).ShowAsync();
+            }
+        }
+
+        [RelayCommand]
+        private async Task Back()
+        {
+            try
+            {
+                string? path = Path.GetDirectoryName(SelectedFolder);
+                if (!string.IsNullOrEmpty(path))
+                {
+                    UpdateFolderImage(path);
+                };
             }
             catch (Exception ex)
             {

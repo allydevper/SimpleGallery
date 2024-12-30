@@ -18,20 +18,32 @@
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
 		<DockPanel Grid.Row="0" Margin="10">
-			<TextBox DockPanel.Dock="Left" Width="400" Text="C://Desktop/images" IsReadOnly="True" />
+			<TextBox DockPanel.Dock="Left" Width="400"
+					 Text="{Binding SelectedFolder, Mode=TwoWay}"
+					 IsReadOnly="True" />
 			<Button DockPanel.Dock="Right" Width="75"
-                    Content="ABRIR"
+					Content="Abrir"
 					HorizontalContentAlignment="Center"
 					Command="{Binding OpenFolderCommand}"
-                    Background="#1aa34a"
-                    Margin="10,0,0,0" />
+					Background="#1aa34a"
+					Margin="10,0,0,0" />
 		</DockPanel>
+		
+		<StackPanel Grid.Row="1">
+			<Button Content="Retroceder"
+					HorizontalContentAlignment="Center"
+					HorizontalAlignment="Stretch"
+					Command="{Binding BackCommand}"
+					Background="#1aa34a"
+					Margin="10,0,10,0" />
+		</StackPanel>
 
-		<ScrollViewer Grid.Row="1" Margin="10">
+		<ScrollViewer Grid.Row="2" Margin="10">
 			<StackPanel>
 				<ItemsControl ItemsSource="{Binding Folders}">
 					<ItemsControl.ItemsPanel>
@@ -70,7 +82,7 @@
                                         MinHeight="120"
                                         MinWidth="100">
 									<StackPanel>
-										<Image Source="{Binding ImageSource}" Width="64" Height="64" />
+										<Image Source="{Binding ImageSource}" Width="100" Height="100" />
 										<TextBlock Text="{Binding Name}" TextWrapping="Wrap" TextAlignment="Center" />
 									</StackPanel>
 								</Button>
