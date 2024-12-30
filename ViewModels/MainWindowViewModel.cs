@@ -81,7 +81,7 @@ namespace SimpleGallery.ViewModels
             Folders.Clear();
             if (Directory.Exists(SelectedFolder))
             {
-                foreach (var directory in Directory.GetDirectories(SelectedFolder))
+                foreach (var directory in Directory.GetDirectories(SelectedFolder).OrderBy(folder => folder, new NaturalStringComparer()))
                 {
                     string folderName = Path.GetFileName(directory);
 
