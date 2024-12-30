@@ -1,11 +1,17 @@
 ﻿using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
+using MsBox.Avalonia;
+using SimpleGallery.Enum;
 using SimpleGallery.Models;
+using SimpleGallery.Services;
+using SimpleGallery.Utils;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SimpleGallery.ViewModels
@@ -18,22 +24,48 @@ namespace SimpleGallery.ViewModels
 
         public MainWindowViewModel()
         {
-            LoadFolders();
-            LoadImagesAsync();
+            if (!string.IsNullOrEmpty(localPath))
+            {
+                UpdateFolderImage(localPath);
+            }
         }
 
         [RelayCommand]
         private void SelectFolder(FolderFilesModel folder)
         {
-            SelectedFolder = folder.Path;
+            UpdateFolderImage(folder.Path);
+        }
+
+        [RelayCommand]
+        private async Task OpenFolder()
+        {
+            try
+            {
+                var folder = await FilePickerService.SaveFolderAsync();
+                if (folder is null) return;
+
+                string path = Uri.UnescapeDataString(folder.Path.AbsolutePath);
+                UpdateFolderImage(path);
+            }
+            catch (Exception ex)
+            {
+                await MessageBoxManager.GetMessageBoxStandard(MessageType.Error.ToString(), ex.Message).ShowAsync();
+            }
+        }
+
+        private void UpdateFolderImage(string path)
+        {
+            SelectedFolder = path;
+            LoadFolders();
+            LoadImagesAsync();
         }
 
         private void LoadFolders()
         {
             Folders.Clear();
-            if (Directory.Exists(localPath))
+            if (Directory.Exists(SelectedFolder))
             {
-                foreach (var directory in Directory.GetDirectories(localPath))
+                foreach (var directory in Directory.GetDirectories(SelectedFolder))
                 {
                     string folderName = Path.GetFileName(directory);
 
@@ -46,9 +78,9 @@ namespace SimpleGallery.ViewModels
         private async void LoadImagesAsync()
         {
             Images.Clear();
-            if (Directory.Exists(localPath))
+            if (Directory.Exists(SelectedFolder))
             {
-                foreach (var file in Directory.GetFiles(localPath, "*.*", SearchOption.TopDirectoryOnly))
+                foreach (var file in Directory.GetFiles(SelectedFolder, "*.*", SearchOption.TopDirectoryOnly).OrderBy(file => file, new NaturalStringComparer()))
                 {
                     if (IsImageFile(file))
                     {

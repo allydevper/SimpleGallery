@@ -6,87 +6,79 @@
         mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="600"
         Width="500" Height="600"
         WindowStartupLocation="CenterScreen"
-		x:Class="SimpleGallery.Views.MainWindow"
+        x:Class="SimpleGallery.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="Simple Gallery">
 
 	<Design.DataContext>
-		<!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
 		<vm:MainWindowViewModel />
 	</Design.DataContext>
 
 	<Grid>
-		<!-- Estructura principal -->
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
-			<!-- Barra de ruta -->
-			<RowDefinition Height="*" />
-			<!-- Área de carpetas -->
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
-		<!-- Barra de Ruta -->
 		<DockPanel Grid.Row="0" Margin="10">
 			<TextBox DockPanel.Dock="Left" Width="400" Text="C://Desktop/images" IsReadOnly="True" />
 			<Button DockPanel.Dock="Right" Width="75"
-					Content="ABRIR"
+                    Content="ABRIR"
 					HorizontalContentAlignment="Center"
-					Background="#1aa34a"
-					Margin="10,0,0,0" />
+					Command="{Binding OpenFolderCommand}"
+                    Background="#1aa34a"
+                    Margin="10,0,0,0" />
 		</DockPanel>
 
-		<!-- Área de Carpetas -->
 		<ScrollViewer Grid.Row="1" Margin="10">
-			<ItemsControl ItemsSource="{Binding Folders}">
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<WrapPanel />
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
-				<ItemsControl.ItemTemplate>
-					<DataTemplate>
-						<StackPanel Margin="10" Width="100" HorizontalAlignment="Center">
-							<Button Background="Transparent"
-									DoubleTapped="OnFolderDoubleTapped"
-									MinHeight="120"
-									MinWidth="100">
-								<StackPanel>
-									<Image Source="avares://SimpleGallery/Assets/folder_icon.png" Width="64" Height="64" />
-									<TextBlock Text="{Binding Name}" TextWrapping="Wrap" TextAlignment="Center" />
-								</StackPanel>
-							</Button>
-						</StackPanel>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
-		</ScrollViewer>
+			<StackPanel>
+				<ItemsControl ItemsSource="{Binding Folders}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<WrapPanel />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<StackPanel Margin="10" Width="100" HorizontalAlignment="Center">
+								<Button Background="Transparent"
+                                        DoubleTapped="OnFolderDoubleTapped"
+                                        MinHeight="120"
+                                        MinWidth="100">
+									<StackPanel>
+										<Image Source="avares://SimpleGallery/Assets/folder_icon.png" Width="64" Height="64" />
+										<TextBlock Text="{Binding Name}" TextWrapping="Wrap" TextAlignment="Center" />
+									</StackPanel>
+								</Button>
+							</StackPanel>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
 
-		<!-- Área de Imágenes -->
-		<ScrollViewer Grid.Row="2" Margin="10">
-			<ItemsControl ItemsSource="{Binding Images}">
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<WrapPanel />
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
-				<ItemsControl.ItemTemplate>
-					<DataTemplate>
-						<StackPanel Margin="10" Width="100" HorizontalAlignment="Center">
-							<Button Background="Transparent"
-									DoubleTapped="OnImageDoubleTapped"
-									MinHeight="120"
-									MinWidth="100">
-								<StackPanel>
-									<Image Source="{Binding ImageSource}" Width="64" Height="64" />
-									<TextBlock Text="{Binding Name}" TextWrapping="Wrap" TextAlignment="Center" />
-								</StackPanel>
-							</Button>
-						</StackPanel>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
+				<ItemsControl ItemsSource="{Binding Images}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<WrapPanel />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<StackPanel Margin="10" Width="100" HorizontalAlignment="Center">
+								<Button Background="Transparent"
+                                        DoubleTapped="OnImageDoubleTapped"
+                                        MinHeight="120"
+                                        MinWidth="100">
+									<StackPanel>
+										<Image Source="{Binding ImageSource}" Width="64" Height="64" />
+										<TextBlock Text="{Binding Name}" TextWrapping="Wrap" TextAlignment="Center" />
+									</StackPanel>
+								</Button>
+							</StackPanel>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</StackPanel>
 		</ScrollViewer>
 	</Grid>
 </Window>
